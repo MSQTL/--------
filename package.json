@@ -1,0 +1,17 @@
+{
+  "name": "storage",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "MSQTL",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "instascan": "^1.0.0",
+    "jquery": "^3.7.1",
+    "quagga": "^0.12.1"
+  }
+}
