@@ -6,6 +6,10 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html')
 })
 
+app.get('/scan', (req, res) => {
+    res.sendFile(__dirname + '/scanning.html')
+})
+
 const PORT = 80
 
 app.listen(PORT, () => {

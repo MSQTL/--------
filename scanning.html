@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="/script.js" language="text/javascript" type="text/babel"></script>
+    <title>Barcode Scanner</title>
+    <style>
+        #scanner-container {
+            width: 480px;
+            height: 320px;
+        }
+        body{
+            margin: 0;
+        }
+        .menu{
+            height: 40px;
+            width: 100%;
+            background-color: red;
+            color: white;
+            justify-content: space-evenly;
+            display: flex;
+            align-items: center;
+        }
+        .menu a{
+            text-decoration: none;
+            color: black;
+            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <span class="menu">
+        <a href="/">Главная</a>
+        <a href="/scan">Сканирование</a>
+    </span>
+    <div id="scanner-container"></div>
+    <div id="scanner-result"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/script.js" language="text/javascript" type="text/babel"></script>
+    <script type="module">
+
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector('#scanner-container'),
+                constraints: {
+                    width: 480,
+                    height: 320,
+                    facingMode: 'environment' // для использования задней камеры в мобильных устройствах
+                },
+            },
+            decoder: {
+                readers: ["ean_reader"] // указываем, что мы хотим сканировать EAN штрих-коды
+            }
+        }, function (err) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            console.log("Initialization finished. Ready to start");
+            Quagga.start();
+        });
+
+        Quagga.onDetected((result) => {
+
+            console.log("Barcode detected and processed : [" + result.codeResult.code + "]", result);
+            $("#scanner-container").hide();
+            document.querySelector('#scanner-result').innerHTML = result.codeResult.code
+            Quagga.stop()
+        });
+
+    </script>
+</body>
+
+</html>
