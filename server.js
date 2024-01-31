@@ -6,7 +6,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html')
 })
 
-app.get('/scan', (req, res) => {
+app.get('Storage/scan', (req, res) => {
     res.sendFile(__dirname + '/scanning.html')
 })
 
