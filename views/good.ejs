@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+         body {
+            margin: 0;
+        }
+
+        .menu {
+            height: 40px;
+            width: 100%;
+            background-color: red;
+            color: white;
+            justify-content: space-evenly;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu a {
+            width: 210px;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <span class="menu">
+        <a href="/">Список товаров</a>
+        <a href="/add">Добавить товар</a>
+        <a href="/pickup">Забрать товар</a>
+        <a href="/movement">Движение товара</a>
+    </span>
+
+    <h3><%=name_good %></h3>
+    <p>Штрих-код: <%=bar_good %></p>
+
+    <ul>
+        <% if (places) {%>
+            <% for (var i = 0; i < places.length; i++) {%>
+                <li><%=places[i].name_place%></li>
+            <%} %>
+        <%} %>
+    </ul>
+
+</body>
+</html>

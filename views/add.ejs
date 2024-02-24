@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить товар</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        #scanner-container {
+            width: 280px;
+            height: 270px;
+            display: flex;
+            justify-content: baseline;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .menu {
+            height: 40px;
+            width: 100%;
+            background-color: red;
+            color: white;
+            justify-content: space-evenly;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu a {
+            width: 210px;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        input {
+            margin: 10px;
+            font-size: 20pt;
+        }
+
+        .popup-fade {
+            display: none;
+        }
+
+        .popup-fade:before {
+            content: '';
+            background: #000;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.7;
+            z-index: 9999;
+        }
+
+        .popup {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            padding: 20px;
+            width: 360px;
+            margin-left: -200px;
+            background: #fff;
+            border: 1px solid orange;
+            border-radius: 4px;
+            z-index: 99999;
+            opacity: 1;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <span class="menu">
+        <a href="/">Список товаров</a>
+        <a href="/add">Добавить товар</a>
+        <a href="/pickup">Забрать товар</a>
+        <a href="/movement">Движение товара</a>
+    </span>
+
+    <div style="width: 100%; display: flex; flex-direction: column; justify-content: center; text-align: center;">
+        <h1>Добавить товар</h1>
+
+        <div style="display: flex; justify-content: center;">
+            <form action="/add" style="display: grid; justify-content: center;" method="post">
+                <input id="bar_good" name="bar_good" type="text" placeholder="Штрих-код товара">
+                <!-- <input id="name_good" type="text" placeholder="Название товара" readonly> -->
+                <input id="bar_place" name="bar_place" type="text" placeholder="Штрих-код места">
+                <input type="submit" value="Положить товар на полку">
+            </form>
+            <div style="display: flex; flex-direction: column; justify-content: space-between; padding: 10px;">
+                <button id="open_bar_good" style="height: 39px; width: 40px;">
+                    <i class="fa fa-barcode"></i>
+                </button>
+                <button id="open_bar_place" style="height: 39px; width: 40px; margin-bottom: 59px;">
+                    <i class="fa fa-barcode"></i>
+                </button>
+            </div>
+        </div>
+        <% if(message) {%>
+            <p><%=message%></p>
+        <%} %>
+    </div>
+
+    <div class="popup-fade">
+        <div class="popup">
+            <a class="popup-close" href="#">Закрыть</a>
+            <p>Всплывающие окна имеют широкий диапазон применений...</p>
+            <div id="scanner-container"></div>
+        </div>
+    </div>
+
+    <div id="scanner-result"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function ($) {
+            var flag = 0;
+
+            $('#open_bar_good').click(function () {
+                $('.popup-fade').fadeIn();
+                flag = 1;
+                Quagga.init({
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: document.querySelector('#scanner-container'),
+                        constraints: {
+                            width: 100,
+                            height: 100,
+                            facingMode: 'environment' // для использования задней камеры в мобильных устройствах
+                        },
+                    },
+                    decoder: {
+                        readers: ["ean_reader"] // указываем, что мы хотим сканировать EAN штрих-коды
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.error(err);
+                        document.querySelector('#scanner-container').innerHTML = "<p>Видеокамера не найдена!</p>";
+                        return;
+                    }
+                    console.log("Initialization finished. Ready to start");
+                    $("#scanner-container").show();
+                    Quagga.start();
+                });
+
+                return false;
+            });
+
+            $('#open_bar_place').click(function () {
+                $('.popup-fade').fadeIn();
+                flag = 2;
+                Quagga.init({
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: document.querySelector('#scanner-container'),
+                        constraints: {
+                            width: 100,
+                            height: 100,
+                            facingMode: 'environment' // для использования задней камеры в мобильных устройствах
+                        },
+                    },
+                    decoder: {
+                        readers: ["ean_reader"] // указываем, что мы хотим сканировать EAN штрих-коды
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.error(err);
+                        document.querySelector('#scanner-container').innerHTML = "<p>Видеокамера не найдена!</p>";
+                        return;
+                    }
+                    console.log("Initialization finished. Ready to start");
+                    $("#scanner-container").show();
+                    Quagga.start();
+                });
+
+                return false;
+            });
+
+
+            Quagga.onDetected((result) => {
+
+                console.log("Barcode detected and processed : [" + result.codeResult.code + "]", result);
+                $("#scanner-container").hide();
+                if (flag == 1){
+                    document.querySelector('#bar_good').value = result.codeResult.code
+                }
+                else{
+                    document.querySelector('#bar_place').value = result.codeResult.code
+                }
+                
+                document.querySelector('.popup-close').click()
+                console.log(result.codeResult.code)
+                Quagga.stop()
+            });
+
+            $('.popup-close').click(function () {
+                $(this).parents('.popup-fade').fadeOut();
+                return false;
+            });
+
+            $(document).keydown(function (e) {
+                if (e.keyCode === 27) {
+                    e.stopPropagation();
+                    $('.popup-fade').fadeOut();
+                }
+            });
+
+            $('.popup-fade').click(function (e) {
+                if ($(e.target).closest('.popup').length == 0) {
+                    $(this).fadeOut();
+                }
+            });
+        });
+    </script>
+
+    <!-- <script type="module">
+
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector('#scanner-container'),
+                constraints: {
+                    width: 100,
+                    height: 100,
+                    facingMode: 'environment' // для использования задней камеры в мобильных устройствах
+                },
+            },
+            decoder: {
+                readers: ["ean_reader"] // указываем, что мы хотим сканировать EAN штрих-коды
+            }
+        }, function (err) {
+            if (err) {
+                console.error(err);
+                console.log('Не получилось...')
+                return;
+            }
+            console.log("Initialization finished. Ready to start");
+            Quagga.start();
+        });
+
+        Quagga.onDetected((result) => {
+
+            console.log("Barcode detected and processed : [" + result.codeResult.code + "]", result);
+            $("#scanner-container").hide();
+            document.querySelector('#bar_good').value = result.codeResult.code
+            document.querySelector('.popup-close').click()
+            console.log(result.codeResult.code)
+            Quagga.stop()
+        });
+
+    </script> -->
+</body>
+
+</html>
